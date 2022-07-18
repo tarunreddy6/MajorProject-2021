@@ -47,16 +47,45 @@ public class Team_Implementations implements Team_Declarations{
 		return r;
 	}
 
-	@Override
-	public int deleteTeamById(int teamid) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteTeamById(int teamid) throws SQLException, ClassNotFoundException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ipl","root","password");
+		PreparedStatement ps = con.prepareStatement("delete from team where team_id =?");
+		ps.setInt(1, teamid);
+		
+		int r = ps.executeUpdate();
+		return r;
 	}
 
-	@Override
-	public Team getTeamById(int teamid) {
-		// TODO Auto-generated method stub
-		return null;
+	public Team getTeamById(int teamid) throws SQLException, ClassNotFoundException {
+		
+		Team team = null;
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ipl","root","password");
+		PreparedStatement ps = con.prepareStatement("select * from team where team_id =?");
+		ps.setInt(1, teamid);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			team = new Team();
+			team.setName(rs.getString(2));
+			team.setCity(rs.getString(3));
+			team.setState(rs.getString(4));	
+		}
+		return team;
 	}
 
+	public int updateTeam(Team team) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ipl","root","password");
+		PreparedStatement ps = con.prepareStatement("update team set name=?,city=?,state=? where team_id=?");
+		ps.setString(1, team.getName());
+		ps.setString(2, team.getCity());
+		ps.setString(3, team.getState());
+		ps.setInt(4, team.getTeamid());
+		
+		int r = ps.executeUpdate();
+		System.out.println(r);
+		return r;
+	}
 }
