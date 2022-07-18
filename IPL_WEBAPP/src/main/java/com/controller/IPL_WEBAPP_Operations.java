@@ -51,30 +51,55 @@ public class IPL_WEBAPP_Operations extends HttpServlet {
 		}	
     }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String RequestType = request.getParameter("request_type");
 		PrintWriter out = response.getWriter();
-		try {
-			Team team = new Team();
-			team.setName(request.getParameter("teamName"));
-			team.setCity(request.getParameter("city"));
-			team.setState(request.getParameter("state"));
-			int r = new Service_Implementations().addTeam(team);
-			RequestDispatcher rd = null;
-			if(r==0) {
-				out.write("<h1>Not Inserted</h1>");
-				rd = request.getRequestDispatcher("Home.jsp");
+		
+		if(RequestType.equalsIgnoreCase("addteam")) { 	
+			try {										// adding the row to the data_base
+				Team team = new Team();
+				team.setName(request.getParameter("teamName"));
+				team.setCity(request.getParameter("city"));
+				team.setState(request.getParameter("state"));
+				int r = new Service_Implementations().addTeam(team);
+				RequestDispatcher rd = null;
+				if(r==0) {
+					out.write("<h1>Not Inserted</h1>");
+					rd = request.getRequestDispatcher("Home.jsp");
+					rd.forward(request, response);
+				}
+				else
+					doGet(request, response);
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
 			}
-			else
-				doGet(request, response);
-		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
-		//
-		
-		
-		
-	}
-
+		else if(RequestType.equalsIgnoreCase("ModifyTeam")) {   // changing the data 
+			
+			try {
+				int teamid = Integer.parseInt(request.getParameter("team_id"));
+				Team team = new Service_Implementations().getTeam(teamid);
+				request.setAttribute("team", team);
+				RequestDispatcher rd = request.getRequestDispatcher("EditTeam.jsp");
+				rd.forward(request, response);
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		else if(RequestType.equalsIgnoreCase("Delete")) {
+											// deleting the record from db by selecting id
+			try{
+				int teamid= Integer.parseInt(request.getParameter("team_id"));
+				int i = new Service_Implementations().deleteTeam(teamid);
+				if(i!=0)
+					doGet(request, response);
+				else
+					out.write("<h1>Not deleted</h1>");
+				} catch (ClassNotFoundException | SQLException e){
+					e.printStackTrace();
+				}
+		}		
+   }
 }
