@@ -74,7 +74,6 @@ public class IPL_WEBAPP_Operations extends HttpServlet {
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			}
-			
 		}
 		else if(RequestType.equalsIgnoreCase("ModifyTeam")) {   // changing the data 
 			
@@ -101,5 +100,5 @@ public class IPL_WEBAPP_Operations extends HttpServlet {
 					e.printStackTrace();
 				}
 		}		
-   }
+    }
 }
