@@ -17,16 +17,19 @@ public class Service_Implementations {
 		// TODO Auto-generated method stub
 		return new Team_Implementations().insertTeam(team);
 	}
-
 	
-	public int deleteTeam(int teamid) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteTeam(int teamid) throws ClassNotFoundException, SQLException {
+		
+		return new Team_Implementations().deleteTeamById(teamid);
 	}
 
-	public Team getTeam(int teamid) {
-		// TODO Auto-generated method stub
-		return null;
+	public Team getTeam(int teamid) throws ClassNotFoundException, SQLException {
+		
+		return new Team_Implementations().getTeamById(teamid);
+	}
+	
+	public int updateTeam(Team team) throws ClassNotFoundException, SQLException {
+		return new Team_Implementations().updateTeam(team);
 	}
 
 
