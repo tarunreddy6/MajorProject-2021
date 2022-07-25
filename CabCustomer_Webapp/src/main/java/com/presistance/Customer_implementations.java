@@ -32,10 +32,8 @@ public class Customer_implementations implements Customer_declarations {
 			customer.setPhoneNum(rs.getLong(6));
 			customerList.add(customer);
 		}
-		
 		return customerList;
 	}
-
 	
 	public int insertCustomer(Customer customer) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -54,15 +52,49 @@ public class Customer_implementations implements Customer_declarations {
 	}
 
 	
-	public int deleteCustomerById(int custid) {
+	public int deleteCustomerById(int custid) throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cohort24","root","password");
+		PreparedStatement ps = con.prepareStatement("delete from cabcustomer where custID=?");
+		ps.setInt(1, custid);
 		
-		return 0;
+		int r = ps.executeUpdate();
+		return r;
 	}
 
-	
-	public Customer getCustomerById(int custid) {
+	public Customer getCustomerById(int custid) throws ClassNotFoundException, SQLException {
 		
-		return null;
+		Customer customer = null;
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cohort24","root","password");
+		PreparedStatement ps = con.prepareStatement("select * from cabcustomer where custID=?");
+		ps.setInt(1, custid);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			customer = new Customer();
+			customer.setName(rs.getString(2));
+			customer.setPickup(rs.getString(3));
+			customer.setDropup(rs.getString(4));
+			customer.setDistance(rs.getFloat(5));
+			customer.setPhoneNum(rs.getLong(6));
+		}
+		return customer;
+	}
+
+	public int updateCustomer(Customer customer) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cohort24","root","password");
+		PreparedStatement ps = con.prepareStatement("update cabcustomer set customerName=?,pickupLocation=?,dropLocation=?,distance=?,phoneNo=? where custID=?");
+		ps.setString(1, customer.getName());
+		ps.setString(2, customer.getPickup());
+		ps.setString(3, customer.getDropup());
+		ps.setFloat(4, customer.getDistance());
+		ps.setLong(5, customer.getPhoneNum());
+		ps.setInt(6, customer.getCustid());		
+		int r = ps.executeUpdate();
+		System.out.println(r);
+		return r;
 	}
 
 }

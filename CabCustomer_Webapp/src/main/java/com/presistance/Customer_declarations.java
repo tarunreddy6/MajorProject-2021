@@ -9,6 +9,7 @@ public interface Customer_declarations {
 	
 	public List<Customer> getAllCustomers() throws ClassNotFoundException, SQLException;
 	public int insertCustomer(Customer customer) throws ClassNotFoundException, SQLException;
-	public int deleteCustomerById(int custid);
-	public Customer getCustomerById(int custid);
+	public int deleteCustomerById(int custid) throws ClassNotFoundException, SQLException;
+	public Customer getCustomerById(int custid) throws ClassNotFoundException, SQLException;
+	public int updateCustomer(Customer customer) throws SQLException, ClassNotFoundException;
 }

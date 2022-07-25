@@ -50,26 +50,80 @@ public class Customer_WebappOperations extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String RequestType = request.getParameter("request_type");
 		PrintWriter out = response.getWriter();
-		try {
+		
+		if(RequestType.equalsIgnoreCase("addCustomer")) {
 			
-			Customer customer = new Customer();
-			customer.setName(request.getParameter("customerName"));
-			customer.setPickup(request.getParameter("pickupLocation"));
-			customer.setDropup(request.getParameter("dropLocation"));
-			customer.setDistance(Float.parseFloat(request.getParameter("distance")));
-			customer.setPhoneNum(Long.parseLong(request.getParameter("phoneNum")));
-			int r = new Service_Implementation().addCustomer(customer);
-			RequestDispatcher rd = null;
-			if(r==0) {
-				out.write(",h1>Not Inserted</h1>");
-				rd = request.getRequestDispatcher("CabHome.jsp");
+			try {
+				Customer customer = new Customer();
+				customer.setName(request.getParameter("customerName"));
+				customer.setPickup(request.getParameter("pickupLocation"));
+				customer.setDropup(request.getParameter("dropLocation"));
+				customer.setDistance(Float.parseFloat(request.getParameter("distance")));
+				customer.setPhoneNum(Long.parseLong(request.getParameter("phoneNum")));
+				int r = new Service_Implementation().addCustomer(customer);
+				RequestDispatcher rd = null;
+				if(r==0) {
+					out.write("<h1>Not Inserted</h1>");
+					rd = request.getRequestDispatcher("CabHome.jsp");
+				}
+				else
+					doGet(request, response);
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
 			}
-			else
-				doGet(request, response);
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+		}
+		else if (RequestType.equalsIgnoreCase("ModifyCustomer")) {
+			
+			try {
+				int custid = Integer.parseInt(request.getParameter("custid"));
+				Customer customer = new Service_Implementation().getCustomer(custid);
+				request.setAttribute("customer", customer);
+				RequestDispatcher rd = request.getRequestDispatcher("EditCustomer.jsp");
+				rd.forward(request, response);
+			} catch (ClassNotFoundException | SQLException e) {
+				System.out.println(e);
+			}
+		}
+		else if(RequestType.equalsIgnoreCase("Update")) {
+						
+			try {
+				String name = request.getParameter("customerName");
+				String pickup = request.getParameter("pickupLocation");
+				String dropup = request.getParameter("dropLocation");
+				Float distance = Float.parseFloat(request.getParameter("distance"));
+				long phoneNum = Long.parseLong(request.getParameter("phoneNum"));
+				int custid = Integer.parseInt(request.getParameter("custid"));
+				
+				Customer customer = new Customer();
+				customer.setName(name);
+				customer.setDropup(dropup);
+				customer.setPickup(pickup);
+				customer.setDistance(distance);
+				customer.setPhoneNum(phoneNum);
+				customer.setCustid(custid);
+				int r = new Service_Implementation().updateCustomer(customer);
+				if(r!=0)
+					doGet(request,response);
+				else
+					out.write("<html><body><h2 style='color: red'> Not Updated </h2></body></html>");
+			} catch (ClassNotFoundException | SQLException e) {
+				System.out.println(e);
+			}
+		}
+		else if (RequestType.equalsIgnoreCase("DeleteCustomer")) {
+			
+			try {
+				int custid = Integer.parseInt(request.getParameter("custid"));
+				int i = new Service_Implementation().deleteCustomer(custid);
+				if(i!=0)
+					doGet(request,response);
+				else
+					out.write("<h1 style='color:red'> Not Deleted</h1>");
+				} catch (ClassNotFoundException | SQLException e) {
+					System.out.println(e);
+				}
 		}
 	}
-
 }

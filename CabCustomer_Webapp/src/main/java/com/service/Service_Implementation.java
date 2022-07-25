@@ -13,22 +13,23 @@ public List<Customer> fetchAllCustomers() throws ClassNotFoundException, SQLExce
 		return new Customer_implementations().getAllCustomers();
 	}
 
-	
 	public int addCustomer(Customer customer) throws ClassNotFoundException, SQLException {
 		
 		return new Customer_implementations().insertCustomer(customer);
 	}
 
-	
-	public int deleteCustomer(int custid) {
+	public int deleteCustomer(int custid) throws ClassNotFoundException, SQLException {
 		
-		return 0;
+		return new Customer_implementations().deleteCustomerById(custid);
 	}
 
-	
-	public Customer getCustomer(int custid) {
+	public Customer getCustomer(int custid) throws ClassNotFoundException, SQLException {
 		
-		return null;
+		return new Customer_implementations().getCustomerById(custid);
+	}
+	
+	public int updateCustomer(Customer customer) throws ClassNotFoundException, SQLException {
+		return new Customer_implementations().insertCustomer(customer);
 	}
 
 }
